@@ -1,18 +1,18 @@
 import * as THREE from 'three';
-import { Block, Orientation } from './block';
+import { Block } from './block';
 import { BasicTile, Tile } from './tiles';
 import { Entity } from './entity';
 
 export class Level implements Entity {
   private readonly container: THREE.Object3D;
-  private readonly block: Block;
+  public readonly block: Block;
   private readonly tiles: BasicTile[][];
 
   constructor(template) {
     this.container = new THREE.Group();
 
     // create block
-    this.block = new Block(Orientation.UP, { ...template.start });
+    this.block = new Block({ ...template.start });
     this.block.addToParent(this.container);
 
     // create tiles

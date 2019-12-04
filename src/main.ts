@@ -1,7 +1,8 @@
 import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { Block, Directions } from './entities/block';
 import { Level } from './entities/level';
 import { L1 } from './levels';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(
@@ -20,6 +21,20 @@ const controls = new OrbitControls(camera, renderer.domElement);
 const level = new Level(L1);
 level.addToParent(scene);
 
+const moveKeys = {
+  a: Directions.W,
+  d: Directions.E,
+  s: Directions.S,
+  w: Directions.N,
+};
+
+document.addEventListener('keypress', ev => {
+  const direction = moveKeys[ev.key];
+  if (direction) {
+    level.block.move(direction);
+  }
+});
+
 const animate = function() {
   requestAnimationFrame(animate);
 
@@ -31,4 +46,4 @@ const animate = function() {
   renderer.render(scene, camera);
 };
 
-animate();
+requestAnimationFrame(animate);
