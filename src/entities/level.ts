@@ -1,12 +1,12 @@
 import * as THREE from 'three';
 import { Block } from './block';
-import { BasicTile, Tile } from './tiles';
+import { createTile, Tile } from './tiles';
 import { Entity } from './entity';
 
 export class Level implements Entity {
   private readonly container: THREE.Object3D;
   public readonly block: Block;
-  private readonly tiles: BasicTile[][];
+  private readonly tiles: (Tile | null)[][];
 
   constructor(template) {
     this.container = new THREE.Group();
@@ -21,17 +21,11 @@ export class Level implements Entity {
     this.container.add(tileGroup);
     this.tiles = template.tiles.map((row, z) =>
       row.map((type, x) => {
-        const tile = this.createTile(x, z, type);
+        const tile = createTile(x, z, type);
         tile?.addToParent(tileGroup);
         return tile;
       })
     );
-  }
-
-  createTile(x, z, type): Tile {
-    // TODO: Handle other tile types
-    if (type === null) return;
-    return new BasicTile(x, z);
   }
 
   getTile(x, z) {
