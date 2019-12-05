@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { Block, Orientation } from './block';
-import { BasicTile } from './tiles';
+import { BasicTile, DropTile, EndTile } from './tiles';
 
 export class Level {
   constructor(template) {
@@ -22,7 +22,33 @@ export class Level {
   createTile(x, z, type) {
     // TODO: Handle other tile types
     if (type === null) return;
-    const tile = new BasicTile(x, z);
+    
+    let tile;
+    switch (type){
+      case T:
+        tile = new BasicTile(x, z);
+        break;
+      case D:
+        tile = new DropTile(x, z);
+        break;
+      case E:
+        tile = new EndTile(x, z);
+        break;
+      case W:
+        tile = new WeightedTile(x, z);
+        break;
+      case B:
+        tile = new ButtonTile(x, z);
+        break;
+      case B1:
+        tile = new ButtonTile(x, z);
+        break;
+      case B2:
+        tile = new ButtonTile(x, z);
+        break; 
+      default:
+        tile = new BasicTile(x, z);        
+    }
     this.tileGroup.add(tile.mesh);
     return tile;
   }
