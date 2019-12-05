@@ -22,7 +22,7 @@ export class Level implements Entity {
     this.tiles = template.tiles.map((row, z) =>
       row.map((type, x) => {
         const tile = this.createTile(x, z, type);
-        tile.addToParent(tileGroup);
+        tile?.addToParent(tileGroup);
         return tile;
       })
     );
