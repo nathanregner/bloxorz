@@ -1,16 +1,16 @@
 const _ = null;
-const E = 'goal';
-const T = 'tile';
-const D = 'dropable';
-const B = 'button';
-const O = 'one time use';
-const W = 'cannot stand on';
+export const E = 'goal';
+export const T = 'tile';
+export const D = 'dropable';
+export const B = 'button';
+export const O = 'one time use';
+export const W = 'cannot stand on';
 
 //capability of 2 buttons
-const B1 = 'button 1';
-const B2 = 'button 2';
-const D1 = 'dropable 1';
-const D2 = 'dropable 2';
+export const B1 = 'button 1';
+export const B2 = 'button 2';
+export const D1 = 'dropable 1';
+export const D2 = 'dropable 2';
 
 // TODO: Better level format?
 export const L1 = {

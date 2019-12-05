@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { Block, Orientation } from './block';
 import { BasicTile, DropTile, EndTile } from './tiles';
+import { T, D, E, W, B, B1, B2, D1, D2 } from '../levels.js';
 
 export class Level {
   constructor(template) {
@@ -31,6 +32,15 @@ export class Level {
       case D:
         tile = new DropTile(x, z);
         break;
+       case D:
+        tile = new DropTile(x, z);
+        break;
+      case D1:
+        tile = new DropTile(x, z);
+        break;
+      case D2:
+        tile = new DropTile(x, z);
+        break;     
       case E:
         tile = new EndTile(x, z);
         break;
