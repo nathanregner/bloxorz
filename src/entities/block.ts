@@ -1,13 +1,13 @@
 import * as THREE from 'three';
+import { Object3D } from 'three';
 import { Entity } from './entity';
-import { Object3D, Vector3 } from 'three';
 
 interface Position {
   x: number;
   z: number;
 }
 
-interface Direction {
+export interface Direction {
   x: number;
   z: number;
   axis: string;
@@ -26,12 +26,17 @@ const blockTexture = new THREE.TextureLoader().load('assets/block.png');
 export class Block implements Entity {
   private readonly mesh: THREE.Object3D;
   private direction: Direction = Directions.UP;
+  private debug = [new THREE.AxesHelper(), new THREE.AxesHelper()];
 
   // TODO: Height = 1 for split blocks
   constructor(private position: Position, private height = 2) {
     this.mesh = new THREE.Mesh(
       new THREE.BoxGeometry(1, height, 1),
-      new THREE.MeshBasicMaterial({ map: blockTexture })
+      new THREE.MeshBasicMaterial({
+        map: blockTexture,
+        transparent: true,
+        opacity: 0.5,
+      })
     );
     this.updateMesh();
   }
@@ -53,19 +58,26 @@ export class Block implements Entity {
       0,
       this.direction.x * ninty
     );
+
+    this.debug[0].position.set(this.position.x, 0, this.position.z);
+    this.debug[1].position.set(
+      this.position.x + this.direction.x,
+      0,
+      this.position.z + this.direction.z
+    );
   }
 
-  move(orientation: Direction) {
-    let x = orientation.x;
-    let z = orientation.z;
-    if (orientation.axis === this.direction.axis) {
-      if (orientation === this.direction) {
+  move(direction: Direction) {
+    let x = direction.x;
+    let z = direction.z;
+    if (direction.axis === this.direction.axis) {
+      if (direction === this.direction) {
         x *= 2;
         z *= 2;
       }
       this.direction = Directions.UP;
     } else if (this.direction === Directions.UP) {
-      this.direction = orientation;
+      this.direction = direction;
     }
     this.position.x += x;
     this.position.z += z;
@@ -79,6 +91,6 @@ export class Block implements Entity {
   }
 
   addToParent(parent: Object3D) {
-    parent.add(this.mesh);
+    parent.add(this.mesh, ...this.debug);
   }
 }

@@ -1,6 +1,5 @@
 import * as THREE from 'three';
 import { Entity } from './entity';
-import { Object3D } from 'three';
 import { B, B1, B2, D, E, T, W } from '../levels';
 
 export abstract class Tile implements Entity {
@@ -17,7 +16,7 @@ export abstract class Tile implements Entity {
   // TODO: Events (block entered, block exit)
 
   addToParent(parent: THREE.Object3D) {
-    throw new Error('Method not implemented.');
+    parent.add(this.base);
   }
 }
 

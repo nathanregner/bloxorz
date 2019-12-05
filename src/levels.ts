@@ -85,3 +85,5 @@ export const L5 = {
   ],
   start: { x: 12, z: 3 },
 };
+
+export const levels = [L1, L2, L3, L4, L5];

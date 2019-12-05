@@ -1,8 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { Block, Directions } from './entities/block';
-import { Level } from './entities/level';
-import { L1 } from './levels';
+import { Directions } from './entities/block';
+import { Game } from './game';
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(
@@ -18,8 +17,17 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 const controls = new OrbitControls(camera, renderer.domElement);
 
-const level = new Level(L1);
-level.addToParent(scene);
+function setLevelHash(level: number) {
+  window.location.hash = String(level);
+}
+
+function getLevelHash() {
+  return parseInt(window.location.hash.substring(1));
+}
+
+const game = new Game(scene, setLevelHash);
+game.loadLevel(getLevelHash() || 0);
+window.onhashchange = () => game.loadLevel(getLevelHash());
 
 const moveKeys = {
   a: Directions.W,
@@ -31,7 +39,13 @@ const moveKeys = {
 document.addEventListener('keypress', ev => {
   const direction = moveKeys[ev.key];
   if (direction) {
-    level.block.move(direction);
+    game.moveBlock(direction);
+  } else {
+    switch (ev.key) {
+      case 'r':
+        game.restartLevel();
+        break;
+    }
   }
 });
 
