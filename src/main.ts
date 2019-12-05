@@ -18,7 +18,7 @@ document.body.appendChild(renderer.domElement);
 const controls = new OrbitControls(camera, renderer.domElement);
 
 const level = new Level(L1);
-scene.add(level.mesh);
+level.addToParent(scene);
 
 const animate = function() {
   requestAnimationFrame(animate);

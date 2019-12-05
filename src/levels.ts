@@ -20,9 +20,9 @@ export const L1 = {
     [T, T, T, T, T, T, T, T, T, _, _],
     [_, T, T, T, T, T, T, T, T, T, _],
     [_, _, _, _, _, _, T, T, E, T, T],
-    [_, _, _, _, _, _, _, T, T, T, _]
+    [_, _, _, _, _, _, _, T, T, T, _],
   ],
-  start: { x: 1, z: 1 }
+  start: { x: 1, z: 1 },
 };
 
 export const L2 = {
@@ -37,7 +37,7 @@ export const L2 = {
     [_, _, _, _, _, T, E, T, _, _, O, O, T, O],
     [_, _, _, _, _, T, T, T, _, _, O, O, O, O],
   ],
-  start: { x: 0, z: 5 }
+  start: { x: 0, z: 5 },
 };
 
 export const L3 = {
@@ -53,7 +53,7 @@ export const L3 = {
     [_, _, _, _, _, _, T, T, T, T, T, _, _, _, _],
     [_, _, _, _, _, _, _, T, T, T, _, _, _, _, _],
   ],
-  start: { x: 0, z: 3 }
+  start: { x: 0, z: 3 },
 };
 
 export const L4 = {
@@ -67,7 +67,7 @@ export const L4 = {
     [_, T, T, D, _, _, _, T, _, _, _, _, _, _, _],
     [_, _, T, T, T, T, T, T, _, _, _, _, _, _, _],
   ],
-  start: { x: 1, z: 3 }
+  start: { x: 1, z: 3 },
 };
 
 export const L5 = {
@@ -83,5 +83,5 @@ export const L5 = {
     [_, _, _, T, T, W, W, W, W, W, W, _, _, _],
     [_, _, _, T, T, T, _, _, T, T, _, _, _, _],
   ],
-  start: { x: 12, z: 3 }
+  start: { x: 12, z: 3 },
 };
