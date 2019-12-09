@@ -32,11 +32,7 @@ export class Block implements Entity {
   constructor(private position: Position, private height = 2) {
     this.mesh = new THREE.Mesh(
       new THREE.BoxGeometry(1, height, 1),
-      new THREE.MeshBasicMaterial({
-        map: blockTexture,
-        transparent: true,
-        opacity: 0.5,
-      })
+      new THREE.MeshBasicMaterial({ map: blockTexture })
     );
     this.updateMesh();
   }
@@ -65,6 +61,21 @@ export class Block implements Entity {
       0,
       this.position.z + this.direction.z
     );
+  }
+
+  getPoints(): Position[] {
+    const points = [{ ...this.position }];
+    if (this.direction.x != 0 || this.direction.z != 0) {
+      points.push({
+        x: this.position.x + this.direction.x,
+        z: this.position.z + this.direction.z,
+      });
+    }
+    return points;
+  }
+
+  getDirection() {
+    return this.direction;
   }
 
   move(direction: Direction) {

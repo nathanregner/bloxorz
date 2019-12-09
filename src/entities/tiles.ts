@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { Entity } from './entity';
 import { B, B1, B2, D, E, T, W } from '../levels';
+import { Direction } from './block';
 
 export abstract class Tile implements Entity {
   protected base: THREE.Mesh;
@@ -13,11 +14,18 @@ export abstract class Tile implements Entity {
     this.base.position.x = x;
     this.base.position.z = z;
   }
-  // TODO: Events (block entered, block exit)
 
   addToParent(parent: THREE.Object3D) {
     parent.add(this.base);
   }
+
+  // TODO: Override for toggleable blocks
+  isPresent() {
+    return true;
+  }
+
+  // TODO: Override for toggleable blocks
+  onBlockEntered(direction: Direction) {}
 }
 
 const basicTexture = new THREE.TextureLoader().load('assets/tile.png');

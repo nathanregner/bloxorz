@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { createTile, Tile } from './tiles';
 import { Entity } from './entity';
+import { Direction } from './block';
 
 export class Level implements Entity {
   private readonly container: THREE.Object3D;
@@ -19,7 +20,7 @@ export class Level implements Entity {
   }
 
   getTile(x, z) {
-    return this.tiles[z][x];
+    return this.tiles[z] && this.tiles[z][x];
   }
 
   addToParent(parent: THREE.Object3D) {
