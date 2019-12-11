@@ -4,10 +4,17 @@ import { levels } from './levels';
 import { Block, Direction, Directions } from './entities/block';
 import { EndTile } from './entities/tiles';
 
+export function center(obj: THREE.Object3D): THREE.Vector3 {
+  return new THREE.Box3()
+    .setFromObject(obj)
+    .getCenter(obj.position)
+    .multiplyScalar(-1);
+}
+
 export class Game {
   private level: Level;
   private levelNumber: number;
-  private levelContainer = new THREE.Object3D();
+  private root = new THREE.Object3D();
 
   private block: Block;
 
@@ -17,20 +24,23 @@ export class Game {
   ) {}
 
   loadLevel(n) {
-    const level = levels[n];
-    if (!level) {
+    const levelTemplate = levels[n];
+    if (!levelTemplate) {
       throw new Error(`Invalid level number${n}`);
     }
 
-    this.scene.remove(this.levelContainer);
+    const level = new Level(levelTemplate);
+    const root = new THREE.Object3D();
+    root.add(level.obj3d());
 
+    const block = new Block({ ...levelTemplate.start });
+    root.add(block.obj3d());
+
+    this.block = block;
+    this.level = level;
     this.levelNumber = n;
-    this.level = new Level(level);
-    this.levelContainer = new THREE.Object3D();
-    this.level.addToParent(this.levelContainer);
-    this.block = new Block({ ...level.start });
-    this.block.addToParent(this.levelContainer);
-    this.scene.add(this.levelContainer);
+    this.scene.remove(this.root);
+    this.scene.add((this.root = root));
     this.levelChanged?.call(undefined, n);
   }
 
@@ -65,5 +75,9 @@ export class Game {
 
   restartLevel() {
     this.loadLevel(this.levelNumber);
+  }
+
+  getLevelObject() {
+    return this.level.obj3d();
   }
 }
