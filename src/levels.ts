@@ -6,12 +6,6 @@ export const B = 'button';
 export const O = 'one time use';
 export const W = 'cannot stand on';
 
-//capability of 2 buttons
-export const B1 = 'button 1';
-export const B2 = 'button 2';
-export const D1 = 'dropable 1';
-export const D2 = 'dropable 2';
-
 // TODO: Better level format?
 export const L1 = {
   tiles: [

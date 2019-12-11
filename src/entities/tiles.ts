@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 import { Entity } from './entity';
-import { B, B1, B2, D, E, T, W } from '../levels';
+import { B, D, E, T, W } from '../levels';
 import { Direction, Directions } from './block';
+import { DirectionalLight } from 'three';
 
 export abstract class Tile implements Entity {
   protected base: THREE.Mesh;
@@ -24,8 +25,18 @@ export abstract class Tile implements Entity {
     return true;
   }
 
+  setVisible(visible: boolean){
+    this.base.visible = visible;
+  }
+
+  isVisible(){
+    return this.base.visible;
+  }
+
   // TODO: Override for toggleable blocks
-  onBlockEntered(direction: Direction) {}
+  onBlockEntered(direction: Direction) {
+
+  }
 }
 
 const basicTexture = new THREE.TextureLoader().load('assets/tile.png');
@@ -36,19 +47,11 @@ export class BasicTile extends Tile {
   }
 }
 
-const dropTexture = new THREE.TextureLoader().load('assets/droptile.png');
+const dropTexture = new THREE.TextureLoader().load('assets/button.png');
 
 export class DropTile extends Tile {
   constructor(x: number, z: number) {
     super(x, z, dropTexture);
-  }
-}
-
-const toggleTexture = new THREE.TextureLoader().load('assets/toggletile.png');
-
-export class ToggleTile extends Tile {
-  constructor(x: number, z: number) {
-    super(x, z, toggleTexture);
   }
 }
 
@@ -60,10 +63,7 @@ export class EndTile extends Tile {
   }
 }
 
-const weightedTexture = new THREE.TextureLoader().load(
-  'assets/weightedtile.png'
-);
-
+const weightedTexture = new THREE.TextureLoader().load('assets/weightedtile.png');
 export class WeightedTile extends Tile {
   constructor(x: number, z: number) {
     super(x, z, weightedTexture);
@@ -80,22 +80,20 @@ export class WeightedTile extends Tile {
   }
 }
 
-const buttonTileTexture = new THREE.TextureLoader().load(
-  'assets/buttontile.png'
-);
+const buttonTileTexture = new THREE.TextureLoader().load('assets/buttontile.png');
 const buttonTexture = new THREE.TextureLoader().load('assets/button.png');
-
 export class ButtonTile extends Tile {
   private readonly button: THREE.Object3D;
 
   constructor(x, z) {
     super(x, z, buttonTileTexture);
     this.button = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.5, 0.5, 1, 1),
+      new THREE.CylinderGeometry(0.5,0.5,0.25),
       new THREE.MeshBasicMaterial({ map: buttonTexture })
     );
-    this.button.position.x = x + 0.5;
-    this.button.position.y = z + 0.3;
+    this.button.position.x = x-9;
+    this.button.position.z = z-4;
+    this.button.position.y = this.button.position.y+0.25;
     this.base.add(this.button);
   }
 }
@@ -112,10 +110,6 @@ export function createTile(x: number, z: null, type: string) {
     case W:
       return new WeightedTile(x, z);
     case B:
-      return new ButtonTile(x, z);
-    case B1:
-      return new ButtonTile(x, z);
-    case B2:
       return new ButtonTile(x, z);
     default:
       return new BasicTile(x, z);

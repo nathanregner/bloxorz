@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "popmotion": "^8.7.1",
     "three": "^0.110.0"
   },
   "devDependencies": {
