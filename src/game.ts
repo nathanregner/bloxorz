@@ -4,11 +4,9 @@ import { levels } from './levels';
 import { Block, Direction, Directions } from './entities/block';
 import { EndTile } from './entities/tiles';
 
-export function center(obj: THREE.Object3D): THREE.Vector3 {
-  return new THREE.Box3()
-    .setFromObject(obj)
-    .getCenter(obj.position)
-    .multiplyScalar(-1);
+export interface GameEvents {
+  onDeath?: () => void;
+  onLevelSwitched?: (n: number) => void;
 }
 
 export class Game {
@@ -18,10 +16,7 @@ export class Game {
 
   private block: Block;
 
-  constructor(
-    private scene: THREE.Object3D,
-    private levelChanged?: (levelNumber: number) => void
-  ) {}
+  constructor(private scene: THREE.Object3D, private events: GameEvents) {}
 
   loadLevel(n) {
     const levelTemplate = levels[n];
@@ -41,7 +36,7 @@ export class Game {
     this.levelNumber = n;
     this.scene.remove(this.root);
     this.scene.add((this.root = root));
-    this.levelChanged?.call(undefined, n);
+    this.events.onLevelSwitched?.call(this, n);
   }
 
   moveBlock(direction: Direction) {
@@ -55,6 +50,7 @@ export class Game {
 
       if (!tile?.isPresent()) {
         console.log('Lost level, restarting');
+        this.events.onDeath?.call(this);
         this.restartLevel();
         return;
       }

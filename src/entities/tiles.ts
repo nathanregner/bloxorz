@@ -9,7 +9,7 @@ export abstract class Tile implements Entity {
   constructor(x: number, z: number, texture: THREE.Texture) {
     this.base = new THREE.Mesh(
       new THREE.BoxGeometry(1, 0.3, 1),
-      new THREE.MeshBasicMaterial({ map: texture })
+      new THREE.MeshPhongMaterial({ map: texture })
     );
     this.base.position.x = x;
     this.base.position.z = z;
@@ -82,7 +82,7 @@ export class ButtonTile extends Tile {
     super(x, z, buttonTileTexture);
     this.button = new THREE.Mesh(
       new THREE.CylinderGeometry(0.5, 0.5, 1, 1),
-      new THREE.MeshBasicMaterial({ map: buttonTexture })
+      new THREE.MeshPhongMaterial({ map: buttonTexture })
     );
     this.button.position.x = x + 0.5;
     this.button.position.y = z + 0.3;

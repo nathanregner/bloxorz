@@ -1,10 +1,13 @@
 import * as THREE from 'three';
+import * as audio from './audio';
 import { Directions } from './entities/block';
 import { Game } from './game';
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, undefined, 0.1, 1000);
 camera.position.y = 5;
+
+camera.add(audio.listener);
 
 const renderer = new THREE.WebGLRenderer();
 
@@ -39,9 +42,19 @@ function autoFitCamera(obj: THREE.Object3D, camera: THREE.PerspectiveCamera) {
   camera.updateProjectionMatrix();
 }
 
-const game = new Game(scene, levelNumber => {
-  setLevelHash(levelNumber);
-  autoFitCamera(game.getLevelObject(), camera);
+(function() {
+  const light = new THREE.AmbientLight(0xffffff, 1.0);
+  scene.add(light);
+})();
+
+const game = new Game(scene, {
+  onLevelSwitched: levelNumber => {
+    setLevelHash(levelNumber);
+    autoFitCamera(game.getLevelObject(), camera);
+  },
+  onDeath() {
+    audio.deathSound.play();
+  },
 });
 
 game.loadLevel(getLevelHash() || 0);
