@@ -15,8 +15,8 @@ export abstract class Tile implements Entity {
     this.base.position.z = z;
   }
 
-  addToParent(parent: THREE.Object3D) {
-    parent.add(this.base);
+  obj3d() {
+    return this.base;
   }
 
   // TODO: Override for toggleable blocks

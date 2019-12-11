@@ -4,47 +4,56 @@ import { levels } from './levels';
 import { Block, Direction, Directions } from './entities/block';
 import { EndTile } from './entities/tiles';
 
+export interface GameEvents {
+  onDeath?: () => void;
+  onLevelSwitched?: (n: number) => void;
+}
+
 export class Game {
   private level: Level;
   private levelNumber: number;
-  private levelContainer = new THREE.Object3D();
+  private root = new THREE.Object3D();
 
   private block: Block;
 
-  constructor(
-    private scene: THREE.Object3D,
-    private levelChanged?: (levelNumber: number) => void
-  ) {}
+  constructor(private scene: THREE.Object3D, private events: GameEvents) {}
 
   loadLevel(n) {
-    const level = levels[n];
-    if (!level) {
+    const levelTemplate = levels[n];
+    if (!levelTemplate) {
       throw new Error(`Invalid level number${n}`);
     }
 
-    this.scene.remove(this.levelContainer);
+    const level = new Level(levelTemplate);
+    const root = new THREE.Object3D();
+    root.add(level.obj3d());
 
+    const block = new Block({ ...levelTemplate.start });
+    root.add(block.obj3d());
+
+    this.block = block;
+    this.level = level;
     this.levelNumber = n;
-    this.level = new Level(level);
-    this.levelContainer = new THREE.Object3D();
-    this.level.addToParent(this.levelContainer);
-    this.block = new Block({ ...level.start });
-    this.block.addToParent(this.levelContainer);
-    this.scene.add(this.levelContainer);
-    this.levelChanged?.call(undefined, n);
+    this.scene.remove(this.root);
+    this.scene.add((this.root = root));
+    this.events.onLevelSwitched?.call(this, n);
   }
 
   moveBlock(direction: Direction) {
     this.block.move(direction);
+
+    const blockDirection = this.block.getDirection();
 
     // make sure the player is still in bounds
     const tiles = [];
     for (const point of this.block.getPoints()) {
       const tile = this.level.getTile(point.x, point.z);
       tiles.push(tile);
+      tile?.onBlockEntered(blockDirection);
 
       if (!tile?.isPresent()) {
         console.log('Lost level, restarting');
+        this.events.onDeath?.call(this);
         this.restartLevel();
         return;
       }
@@ -52,18 +61,19 @@ export class Game {
 
     // propagate block events
     for (const tile of tiles) {
-      const direction = this.block.getDirection();
-      if (tile instanceof EndTile && direction == Directions.UP) {
+      if (tile instanceof EndTile && blockDirection == Directions.UP) {
         console.log('Won level, moving to next');
         this.loadLevel(this.levelNumber + 1);
         return;
       }
-
-      tile.onBlockEntered(direction);
     }
   }
 
   restartLevel() {
     this.loadLevel(this.levelNumber);
+  }
+
+  getLevelObj3d() {
+    return this.level.obj3d();
   }
 }

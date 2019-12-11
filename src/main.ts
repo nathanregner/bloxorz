@@ -1,21 +1,23 @@
 import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { Directions } from './entities/block';
 import { Game } from './game';
 
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(
-  75,
-  window.innerWidth / window.innerHeight,
-  0.1,
-  1000
-);
-camera.position.z = 5;
+const camera = new THREE.PerspectiveCamera(75, undefined, 0.1, 1000);
+camera.position.y = 5;
 
 const renderer = new THREE.WebGLRenderer();
-renderer.setSize(window.innerWidth, window.innerHeight);
+
+function resize() {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+}
+
+resize();
+window.addEventListener('resize', resize);
+
 document.body.appendChild(renderer.domElement);
-const controls = new OrbitControls(camera, renderer.domElement);
 
 function setLevelHash(level: number) {
   window.location.hash = String(level);
@@ -25,7 +27,25 @@ function getLevelHash() {
   return parseInt(window.location.hash.substring(1));
 }
 
-const game = new Game(scene, setLevelHash);
+function autoFitCamera(obj: THREE.Object3D, camera: THREE.PerspectiveCamera) {
+  const boundingSphere = new THREE.Box3()
+    .setFromObject(obj)
+    .getBoundingSphere(new THREE.Sphere());
+
+  camera.position.setX(boundingSphere.center.x);
+  camera.position.setZ(boundingSphere.radius * 1.1);
+  camera.lookAt(boundingSphere.center);
+
+  camera.updateProjectionMatrix();
+}
+
+const game = new Game(scene, {
+  onLevelSwitched: levelNumber => {
+    setLevelHash(levelNumber);
+    autoFitCamera(game.getLevelObj3d(), camera);
+  },
+});
+
 game.loadLevel(getLevelHash() || 0);
 window.onhashchange = () => game.loadLevel(getLevelHash());
 
@@ -51,11 +71,6 @@ document.addEventListener('keypress', ev => {
 
 const animate = function() {
   requestAnimationFrame(animate);
-
-  // const blockMesh = level.block.mesh;
-  // blockMesh.rotation.x += 0.01;
-  // blockMesh.rotation.y += 0.01;
-  controls.update();
 
   renderer.render(scene, camera);
 };

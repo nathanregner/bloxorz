@@ -26,7 +26,6 @@ const blockTexture = new THREE.TextureLoader().load('assets/block.png');
 export class Block implements Entity {
   private readonly mesh: THREE.Object3D;
   private direction: Direction = Directions.UP;
-  private debug = [new THREE.AxesHelper(), new THREE.AxesHelper()];
 
   // TODO: Height = 1 for split blocks
   constructor(private position: Position, private height = 2) {
@@ -53,13 +52,6 @@ export class Block implements Entity {
       this.direction.z * ninty,
       0,
       this.direction.x * ninty
-    );
-
-    this.debug[0].position.set(this.position.x, 0, this.position.z);
-    this.debug[1].position.set(
-      this.position.x + this.direction.x,
-      0,
-      this.position.z + this.direction.z
     );
   }
 
@@ -101,7 +93,7 @@ export class Block implements Entity {
     });
   }
 
-  addToParent(parent: Object3D) {
-    parent.add(this.mesh, ...this.debug);
+  obj3d() {
+    return this.mesh;
   }
 }

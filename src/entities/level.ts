@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 import { createTile, Tile } from './tiles';
 import { Entity } from './entity';
-import { Direction } from './block';
 
 export class Level implements Entity {
   private readonly container: THREE.Object3D;
@@ -13,7 +12,9 @@ export class Level implements Entity {
     this.tiles = template.tiles.map((row, z) =>
       row.map((type, x) => {
         const tile = createTile(x, z, type);
-        tile?.addToParent(this.container);
+        if (tile != null) {
+          this.container.add(tile.obj3d());
+        }
         return tile;
       })
     );
@@ -23,7 +24,7 @@ export class Level implements Entity {
     return this.tiles[z] && this.tiles[z][x];
   }
 
-  addToParent(parent: THREE.Object3D) {
-    parent.add(this.container);
+  obj3d() {
+    return this.container;
   }
 }
