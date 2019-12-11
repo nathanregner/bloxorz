@@ -25,18 +25,16 @@ export abstract class Tile implements Entity {
     return true;
   }
 
-  setVisible(visible: boolean){
+  setVisible(visible: boolean) {
     this.base.visible = false;
   }
 
-  isVisible(){
+  isVisible() {
     return this.base.visible;
   }
 
   // TODO: Override for toggleable blocks
-  onBlockEntered(direction: Direction) {
-    
-  }
+  onBlockEntered(direction: Direction) {}
 }
 
 const basicTexture = new THREE.TextureLoader().load('assets/tile.png');
@@ -91,12 +89,10 @@ export class ButtonTile extends Tile {
   constructor(x, z) {
     super(x, z, buttonTileTexture);
     this.button = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.5,0.5,0.25),
+      new THREE.CylinderGeometry(0.5, 0.5, 0.25),
       new THREE.MeshBasicMaterial({ map: toggleTexture })
     );
-    this.button.position.x = x-9;
-    this.button.position.z = z-4;
-    this.button.position.y = this.button.position.y+0.25;
+    this.button.position.y = this.button.position.y + 0.25;
     this.base.add(this.button);
   }
 }
