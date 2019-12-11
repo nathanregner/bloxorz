@@ -47,7 +47,7 @@ export class BasicTile extends Tile {
   }
 }
 
-const dropTexture = new THREE.TextureLoader().load('assets/droptile.png');
+const dropTexture = new THREE.TextureLoader().load('assets/droptiled.png');
 
 export class DropTile extends Tile {
   constructor(x: number, z: number) {
