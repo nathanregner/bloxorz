@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { Entity } from './entity';
 import { B, B1, B2, D, E, T, W } from '../levels';
-import { Direction } from './block';
+import { Direction, Directions } from './block';
 
 export abstract class Tile implements Entity {
   protected base: THREE.Mesh;
@@ -67,6 +67,16 @@ const weightedTexture = new THREE.TextureLoader().load(
 export class WeightedTile extends Tile {
   constructor(x: number, z: number) {
     super(x, z, weightedTexture);
+  }
+
+  onBlockEntered(direction: Direction) {
+    if (direction === Directions.UP) {
+      this.base.visible = false;
+    }
+  }
+
+  isPresent() {
+    return this.base.visible;
   }
 }
 
