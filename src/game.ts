@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { Level } from './entities/level';
 import { levels } from './levels';
 import { Block, Direction, Directions } from './entities/block';
-import { EndTile } from './entities/tiles';
+import { EndTile, ButtonTile, ToggleTile } from './entities/tiles';
 
 export class Game {
   private level: Level;
@@ -43,7 +43,7 @@ export class Game {
       const tile = this.level.getTile(point.x, point.z);
       tiles.push(tile);
 
-      if (!tile?.isPresent()) {
+      if (!tile?.isPresent() || !tile?.isVisible()) {
         console.log('Lost level, restarting');
         this.restartLevel();
         return;
@@ -57,6 +57,19 @@ export class Game {
         console.log('Won level, moving to next');
         this.loadLevel(this.levelNumber + 1);
         return;
+      }
+
+      if (tile instanceof ButtonTile && direction == Directions.UP) {
+        let tiles = this.level.getTiles;
+        // Find the toggle tile when on button tile
+        for (let i = 0; i < tiles.length; i++) {
+          let tileRow = tiles[i];
+          for (let j = 0; j < tileRow.length; j++) {
+            if (tileRow[j] instanceof ToggleTile){
+              tileRow[j].setVisible(true);
+            }
+          }
+        }
       }
 
       tile.onBlockEntered(direction);
