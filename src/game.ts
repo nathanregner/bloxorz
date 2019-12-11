@@ -67,13 +67,16 @@ export class Game {
         return;
       }
 
-      if (tile instanceof ButtonTile && direction == Directions.UP) {
+      if (
+        tile instanceof ButtonTile &&
+        this.block.getDirection() == Directions.UP
+      ) {
         let tiles = this.level.getTiles();
         // Find the toggle tile when on button tile
         for (let i = 0; i < tiles.length; i++) {
           let tileRow = tiles[i];
           for (let j = 0; j < tileRow.length; j++) {
-            if (tileRow[j] instanceof DropTile){
+            if (tileRow[j] instanceof DropTile) {
               tileRow[j].setVisible(true);
             }
           }
