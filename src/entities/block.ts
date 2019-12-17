@@ -31,7 +31,7 @@ export class Block implements Entity {
   constructor(private position: Position, private height = 2) {
     this.mesh = new THREE.Mesh(
       new THREE.BoxGeometry(1, height, 1),
-      new THREE.MeshBasicMaterial({ map: blockTexture })
+      new THREE.MeshPhongMaterial({ map: blockTexture })
     );
     this.updateMesh();
   }

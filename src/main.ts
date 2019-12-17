@@ -42,6 +42,15 @@ function createGame() {
   return game;
 }
 
+function setupLights() {
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+  scene.add(ambientLight);
+
+  const directionalLight = new THREE.DirectionalLight(0xffffff, 0.3);
+  directionalLight.position.set(0, 10, -10);
+  scene.add(directionalLight);
+}
+
 function setupEventHandlers() {
   function resize() {
     camera.aspect = window.innerWidth / window.innerHeight;
@@ -78,6 +87,7 @@ function setupKeyBindings(game: Game) {
 (function() {
   // setup game state
   const game = createGame();
+  setupLights();
   setupKeyBindings(game);
   setupEventHandlers();
 
