@@ -3,10 +3,11 @@ import { Directions } from './entities/block';
 import { Game } from './game';
 
 const scene = new THREE.Scene();
+
 const camera = new THREE.PerspectiveCamera(75, undefined, 0.1, 1000);
 camera.position.y = 5;
 
-const renderer = new THREE.WebGLRenderer();
+const renderer = new THREE.WebGLRenderer({ alpha: true });
 
 function resize() {
   camera.aspect = window.innerWidth / window.innerHeight;

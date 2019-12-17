@@ -2,15 +2,20 @@ import * as THREE from 'three';
 import { Entity } from './entity';
 import { B, D, E, T, W } from '../levels';
 import { Direction, Directions } from './block';
-import { DirectionalLight } from 'three';
+
+const textureLoader = new THREE.TextureLoader();
 
 export abstract class Tile implements Entity {
   protected base: THREE.Mesh;
 
-  constructor(x: number, z: number, texture: THREE.Texture) {
+  protected constructor(
+    x: number,
+    z: number,
+    params: THREE.MeshBasicMaterialParameters
+  ) {
     this.base = new THREE.Mesh(
       new THREE.BoxGeometry(1, 0.3, 1),
-      new THREE.MeshBasicMaterial({ map: texture })
+      new THREE.MeshBasicMaterial(params)
     );
     this.base.position.x = x;
     this.base.position.z = z;
@@ -20,53 +25,45 @@ export abstract class Tile implements Entity {
     return this.base;
   }
 
-  // TODO: Override for toggleable blocks
   isPresent() {
-    return true;
-  }
-
-  setVisible(visible: boolean){
-    this.base.visible = visible;
-  }
-
-  isVisible(){
     return this.base.visible;
   }
 
-  // TODO: Override for toggleable blocks
-  onBlockEntered(direction: Direction) {
-
+  setVisible(visible: boolean) {
+    this.base.visible = visible;
   }
-}
 
-const basicTexture = new THREE.TextureLoader().load('assets/tile.png');
+  onBlockEntered(direction: Direction) {}
+}
 
 export class BasicTile extends Tile {
+  private static textuure = textureLoader.load('assets/tile.png');
+
   constructor(x: number, z: number) {
-    super(x, z, basicTexture);
+    super(x, z, { map: BasicTile.textuure });
   }
 }
-
-const dropTexture = new THREE.TextureLoader().load('assets/droptile.png');
 
 export class DropTile extends Tile {
+  private static texture = textureLoader.load('assets/droptile.png');
+
   constructor(x: number, z: number) {
-    super(x, z, dropTexture);
+    super(x, z, { map: DropTile.texture });
+    this.setVisible(false);
   }
 }
-
-const endTexture = new THREE.TextureLoader().load('assets/end.png');
 
 export class EndTile extends Tile {
   constructor(x: number, z: number) {
-    super(x, z, endTexture);
+    super(x, z, { opacity: 0, transparent: true });
   }
 }
 
-const weightedTexture = new THREE.TextureLoader().load('assets/weightedtile.png');
 export class WeightedTile extends Tile {
+  private static texture = textureLoader.load('assets/weightedtile.png');
+
   constructor(x: number, z: number) {
-    super(x, z, weightedTexture);
+    super(x, z, { map: WeightedTile.texture });
   }
 
   onBlockEntered(direction: Direction) {
@@ -80,20 +77,21 @@ export class WeightedTile extends Tile {
   }
 }
 
-const buttonTileTexture = new THREE.TextureLoader().load('assets/buttontile.png');
-const buttonTexture = new THREE.TextureLoader().load('assets/button.png');
 export class ButtonTile extends Tile {
+  private static texture = textureLoader.load('assets/buttontile.png');
+  private static buttonTexture = textureLoader.load('assets/button.png');
+
   private readonly button: THREE.Object3D;
 
   constructor(x, z) {
-    super(x, z, buttonTileTexture);
+    super(x, z, { map: ButtonTile.texture });
     this.button = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.5,0.5,0.25),
-      new THREE.MeshBasicMaterial({ map: buttonTexture })
+      new THREE.CylinderGeometry(0.5, 0.5, 0.25),
+      new THREE.MeshBasicMaterial({ map: ButtonTile.buttonTexture })
     );
-    this.button.position.x = x-9;
-    this.button.position.z = z-4;
-    this.button.position.y = this.button.position.y+0.25;
+    this.button.position.x = x - 9;
+    this.button.position.z = z - 4;
+    this.button.position.y = this.button.position.y + 0.25;
     this.base.add(this.button);
   }
 }

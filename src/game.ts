@@ -51,7 +51,7 @@ export class Game {
       tiles.push(tile);
       tile?.onBlockEntered(blockDirection);
 
-      if (!tile?.isPresent() || !tile?.isVisible()) {
+      if (!tile?.isPresent()) {
         console.log('Lost level, restarting');
         this.events.onDeath?.call(this);
         this.restartLevel();
@@ -67,10 +67,7 @@ export class Game {
         return;
       }
 
-      if (
-        tile instanceof ButtonTile &&
-        this.block.getDirection() == Directions.UP
-      ) {
+      if (tile instanceof ButtonTile && blockDirection == Directions.UP) {
         let tiles = this.level.getTiles();
         // Find the toggle tile when on button tile
         for (let i = 0; i < tiles.length; i++) {

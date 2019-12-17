@@ -14,9 +14,6 @@ export class Level implements Entity {
     this.tiles = template.tiles.map((row, z) =>
       row.map((type, x) => {
         const tile = createTile(x, z, type);
-        if (type === D) {
-          tile?.setVisible(false);
-        }
         if (tile != null) {
           this.container.add(tile.obj3d());
         }
