@@ -33,6 +33,7 @@ export class Block implements Entity {
       new THREE.BoxGeometry(1, height, 1),
       new THREE.MeshPhongMaterial({ map: blockTexture })
     );
+    this.mesh.castShadow = true;
     this.updateMesh();
   }
 
