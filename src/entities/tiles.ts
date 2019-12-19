@@ -90,9 +90,7 @@ export class ButtonTile extends Tile {
       new THREE.CylinderGeometry(0.5, 0.5, 0.25),
       new THREE.MeshPhongMaterial({ map: ButtonTile.buttonTexture })
     );
-    this.button.position.x = x - 9;
-    this.button.position.z = z - 4;
-    this.button.position.y = this.button.position.y + 0.25;
+    this.button.position.y = 0.25;
     this.base.add(this.button);
   }
 }
