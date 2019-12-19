@@ -3,7 +3,6 @@ export const E = 'goal';
 export const T = 'tile';
 export const D = 'dropable';
 export const B = 'button';
-export const O = 'one time use';
 export const W = 'cannot stand on';
 
 // TODO: Better level format?
@@ -21,15 +20,15 @@ export const L1 = {
 
 export const L2 = {
   tiles: [
-    [_, _, _, O, O, O, O, O, O, O, _, _, _, _],
-    [_, _, _, O, O, O, O, O, O, O, _, _, _, _],
+    [_, _, _, W, W, W, W, W, W, W, _, _, _, _],
+    [_, _, _, W, W, W, W, W, W, W, _, _, _, _],
     [T, T, T, T, _, _, _, _, _, T, T, T, _, _],
     [T, T, T, _, _, _, _, _, _, _, T, T, _, _],
     [T, T, T, _, _, _, _, _, _, _, T, T, _, _],
-    [T, T, T, _, _, T, T, T, T, O, O, O, O, O],
-    [T, T, T, _, _, T, T, T, T, O, O, O, O, O],
-    [_, _, _, _, _, T, E, T, _, _, O, O, T, O],
-    [_, _, _, _, _, T, T, T, _, _, O, O, O, O],
+    [T, T, T, _, _, T, T, T, T, W, W, W, W, W],
+    [T, T, T, _, _, T, T, T, T, W, W, W, W, W],
+    [_, _, _, _, _, T, E, T, _, _, W, W, T, W],
+    [_, _, _, _, _, T, T, T, _, _, W, W, W, W],
   ],
   start: { x: 0, z: 5 },
 };
@@ -80,4 +79,9 @@ export const L5 = {
   start: { x: 12, z: 3 },
 };
 
-export const levels = [L1, L2, L3, L4, L5];
+export interface LevelTemplate {
+  tiles: string[][];
+  start: { x: number; z: number };
+}
+
+export const levels: LevelTemplate[] = [L1, L2, L3, L4, L5];
