@@ -1,10 +1,13 @@
 import * as THREE from 'three';
 import { Directions } from './entities/block';
 import { Game } from './game';
+import { Light } from 'three';
 
 const scene = new THREE.Scene();
 const renderer = new THREE.WebGLRenderer({ alpha: true });
 document.body.appendChild(renderer.domElement);
+renderer.shadowMapEnabled = true;
+renderer.shadowMap.type = THREE.PCFShadowMap;
 
 const camera = new THREE.PerspectiveCamera(75, undefined, 0.1, 1000);
 camera.position.y = 5.5;
@@ -48,6 +51,8 @@ function setupLights() {
 
   const directionalLight = new THREE.DirectionalLight(0xffffff, 0.3);
   directionalLight.position.set(0, 10, -10);
+
+  directionalLight.castShadow = true;
   scene.add(directionalLight);
 }
 

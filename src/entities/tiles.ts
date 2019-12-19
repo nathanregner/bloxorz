@@ -19,6 +19,7 @@ export abstract class Tile implements Entity {
     );
     this.base.position.x = x;
     this.base.position.z = z;
+    this.base.receiveShadow = true;
   }
 
   obj3d() {
