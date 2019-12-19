@@ -3,6 +3,7 @@ import { Level } from './entities/level';
 import { levels } from './levels';
 import { Block, Direction, Directions } from './entities/block';
 import { ButtonTile, DropTile, EndTile } from './entities/tiles';
+import { AnimationQueue } from './animation';
 
 export interface GameEvents {
   onDeath?: () => void;
@@ -12,23 +13,26 @@ export interface GameEvents {
 export class Game {
   private level: Level;
   private levelNumber: number;
-  private root = new THREE.Object3D();
-
   private block: Block;
+
+  private animationQueue = new AnimationQueue();
+  private root = new THREE.Object3D();
 
   constructor(private scene: THREE.Object3D, private events: GameEvents) {}
 
-  loadLevel(n) {
+  async loadLevel(n) {
     const levelTemplate = levels[n];
     if (!levelTemplate) {
       throw new Error(`Invalid level number${n}`);
     }
 
+    await this.animationQueue.drain();
+
     const level = new Level(levelTemplate);
     const root = new THREE.Object3D();
     root.add(level.obj3d());
 
-    const block = new Block({ ...levelTemplate.start });
+    const block = new Block(this.animationQueue, { ...levelTemplate.start });
     root.add(block.obj3d());
 
     this.block = block;
@@ -46,19 +50,21 @@ export class Game {
     let text = number.toString();
     counter.innerHTML = text;
 
+    if (!this.animationQueue.isEmpty()) return;
     this.block.move(direction);
 
     const blockDirection = this.block.getDirection();
 
     // make sure the player is still in bounds
     const tiles = [];
-    for (const point of this.block.getPoints()) {
+    for (const point of this.block.getPositions()) {
       const tile = this.level.getTile(point.x, point.z);
       tiles.push(tile);
-      tile?.onBlockEntered(blockDirection);
+      tile?.onBlockEntered(blockDirection, this.animationQueue);
 
       if (!tile?.isPresent()) {
         console.log('Lost level, restarting');
+        this.block.fall();
         this.events.onDeath?.call(this);
         this.restartLevel();
         return;
@@ -69,6 +75,7 @@ export class Game {
     for (const tile of tiles) {
       if (tile instanceof EndTile && blockDirection == Directions.UP) {
         console.log('Won level, moving to next');
+        this.block.fall();
         this.loadLevel(this.levelNumber + 1);
         return;
       }

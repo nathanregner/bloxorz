@@ -1,6 +1,8 @@
 import * as THREE from 'three';
+import { tween } from 'popmotion';
 import { Entity } from './entity';
 import { Direction, Directions } from './block';
+import { AnimationQueue, fallAnimation } from '../animation';
 
 const textureLoader = new THREE.TextureLoader();
 
@@ -33,7 +35,7 @@ export abstract class Tile implements Entity {
     this.base.visible = visible;
   }
 
-  onBlockEntered(direction: Direction) {}
+  onBlockEntered(direction: Direction, animationQueue: AnimationQueue) {}
 }
 
 export class BasicTile extends Tile {
@@ -61,19 +63,32 @@ export class EndTile extends Tile {
 
 export class WeightedTile extends Tile {
   private static texture = textureLoader.load('assets/weightedtile.png');
+  private dropped = false;
 
   constructor(x: number, z: number) {
     super(x, z, { map: WeightedTile.texture });
   }
 
-  onBlockEntered(direction: Direction) {
+  onBlockEntered(direction: Direction, animationQueue: AnimationQueue) {
     if (direction === Directions.UP) {
-      this.base.visible = false;
+      this.drop(animationQueue);
     }
   }
 
   isPresent() {
-    return this.base.visible;
+    return !this.dropped;
+  }
+
+  private drop(animationQueue: AnimationQueue) {
+    this.dropped = true;
+
+    const position = this.base.position;
+    return animationQueue.enqueue(complete => {
+      tween(fallAnimation(position.y)).start({
+        update: y => position.setY(y),
+        complete,
+      });
+    });
   }
 }
 
