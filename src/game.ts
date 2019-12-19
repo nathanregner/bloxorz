@@ -3,6 +3,7 @@ import { Level } from './entities/level';
 import { levels } from './levels';
 import { Block, Direction, Directions } from './entities/block';
 import { EndTile, ButtonTile, DropTile } from './entities/tiles';
+import { AnimationLoop } from './animation';
 
 export interface GameEvents {
   onDeath?: () => void;
@@ -12,13 +13,16 @@ export interface GameEvents {
 export class Game {
   private level: Level;
   private levelNumber: number;
-  private root = new THREE.Object3D();
-
   private block: Block;
+
+  private animationLoop = new AnimationLoop();
+  private root = new THREE.Object3D();
 
   constructor(private scene: THREE.Object3D, private events: GameEvents) {}
 
-  loadLevel(n) {
+  async loadLevel(n) {
+    await this.animationLoop.drain();
+
     const levelTemplate = levels[n];
     if (!levelTemplate) {
       throw new Error(`Invalid level number${n}`);
@@ -28,7 +32,7 @@ export class Game {
     const root = new THREE.Object3D();
     root.add(level.obj3d());
 
-    const block = new Block({ ...levelTemplate.start });
+    const block = new Block(this.animationLoop, { ...levelTemplate.start });
     root.add(block.obj3d());
 
     this.block = block;
@@ -49,7 +53,7 @@ export class Game {
     for (const point of this.block.getPoints()) {
       const tile = this.level.getTile(point.x, point.z);
       tiles.push(tile);
-      tile?.onBlockEntered(blockDirection);
+      tile?.onBlockEntered(blockDirection, this.animationLoop);
 
       if (!tile?.isPresent()) {
         console.log('Lost level, restarting');

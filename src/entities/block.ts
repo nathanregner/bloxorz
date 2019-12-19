@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { Object3D } from 'three';
 import { Entity } from './entity';
+import { AnimationLoop } from '../animation';
 
 interface Position {
   x: number;
@@ -27,10 +28,12 @@ export class Block implements Entity {
   private readonly mesh: THREE.Object3D;
   private direction: Direction = Directions.UP;
 
-  // TODO: Height = 1 for split blocks
-  constructor(private position: Position, private height = 2) {
+  constructor(
+    private readonly animationLoop: AnimationLoop,
+    private position: Position
+  ) {
     this.mesh = new THREE.Mesh(
-      new THREE.BoxGeometry(1, height, 1),
+      new THREE.BoxGeometry(1, 2, 1),
       new THREE.MeshPhongMaterial({ map: blockTexture })
     );
     this.mesh.castShadow = true;
@@ -72,6 +75,8 @@ export class Block implements Entity {
   }
 
   move(direction: Direction) {
+    if (this.animationLoop.hasPending()) return;
+
     let x = direction.x;
     let z = direction.z;
     if (direction.axis === this.direction.axis) {

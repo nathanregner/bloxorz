@@ -1,7 +1,9 @@
 import * as THREE from 'three';
+import { tween, easing } from 'popmotion';
 import { Entity } from './entity';
 import { B, D, E, T, W } from '../levels';
 import { Direction, Directions } from './block';
+import { AnimationLoop } from '../animation';
 
 const textureLoader = new THREE.TextureLoader();
 
@@ -34,7 +36,7 @@ export abstract class Tile implements Entity {
     this.base.visible = visible;
   }
 
-  onBlockEntered(direction: Direction) {}
+  onBlockEntered(direction: Direction, animationLoop: AnimationLoop) {}
 }
 
 export class BasicTile extends Tile {
@@ -62,19 +64,42 @@ export class EndTile extends Tile {
 
 export class WeightedTile extends Tile {
   private static texture = textureLoader.load('assets/weightedtile.png');
+  private dropped = false;
 
   constructor(x: number, z: number) {
     super(x, z, { map: WeightedTile.texture });
   }
 
-  onBlockEntered(direction: Direction) {
+  onBlockEntered(direction: Direction, animationLoop: AnimationLoop) {
     if (direction === Directions.UP) {
-      this.base.visible = false;
+      animationLoop.enqueue(this.drop());
     }
   }
 
   isPresent() {
-    return this.base.visible;
+    return !this.dropped;
+  }
+
+  private drop() {
+    const position = this.base.position;
+    const material = this.base.material as THREE.Material;
+    material.transparent = true;
+    this.dropped = true;
+
+    return new Promise(resolve => {
+      tween({
+        from: { y: position.y, opacity: 1 },
+        to: { y: -15, opacity: 0 },
+        ease: easing.easeOut,
+        duration: 500,
+      }).start({
+        update: ({ y, opacity }) => {
+          position.setY(y);
+          material.opacity = opacity;
+        },
+        complete: resolve,
+      });
+    });
   }
 }
 
