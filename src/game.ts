@@ -40,6 +40,12 @@ export class Game {
   }
 
   moveBlock(direction: Direction) {
+    let counter = document.getElementById('counter');
+    let number = parseInt(counter.innerText);
+    number = number + 1;
+    let text = number.toString();
+    counter.innerHTML = text;
+
     this.block.move(direction);
 
     const blockDirection = this.block.getDirection();
