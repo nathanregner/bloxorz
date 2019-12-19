@@ -50,9 +50,17 @@ function setupLights() {
   scene.add(ambientLight);
 
   const directionalLight = new THREE.DirectionalLight(0xffffff, 0.3);
-  directionalLight.position.set(0, 10, -10);
-
+  directionalLight.position.set(-5, 5, -5);
   directionalLight.castShadow = true;
+  const size = 15;
+  directionalLight.shadow.camera = new THREE.OrthographicCamera(
+    -size,
+    size,
+    size,
+    -size,
+    0.5,
+    1000
+  );
   scene.add(directionalLight);
 }
 
