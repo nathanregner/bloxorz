@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 import { Entity } from './entity';
+import { AnimationQueue, fallAnimation } from '../animation';
+import { easing, tween } from 'popmotion';
 
 interface Position {
   x: number;
@@ -23,13 +25,15 @@ export const Directions = {
 const blockTexture = new THREE.TextureLoader().load('assets/block.png');
 
 export class Block implements Entity {
-  private readonly mesh: THREE.Object3D;
+  private readonly mesh: THREE.Mesh;
   private direction: Direction = Directions.UP;
 
-  // TODO: Height = 1 for split blocks
-  constructor(private position: Position, private height = 2) {
+  constructor(
+    private readonly animationQueue: AnimationQueue,
+    private position: Position
+  ) {
     this.mesh = new THREE.Mesh(
-      new THREE.BoxGeometry(1, height, 1),
+      new THREE.BoxGeometry(1, 2, 1),
       new THREE.MeshPhongMaterial({ map: blockTexture })
     );
     this.mesh.castShadow = true;
@@ -55,15 +59,15 @@ export class Block implements Entity {
     );
   }
 
-  getPoints(): Position[] {
-    const points = [{ ...this.position }];
+  getPositions(): Position[] {
+    const positions = [{ ...this.position }];
     if (this.direction.x != 0 || this.direction.z != 0) {
-      points.push({
+      positions.push({
         x: this.position.x + this.direction.x,
         z: this.position.z + this.direction.z,
       });
     }
-    return points;
+    return positions;
   }
 
   getDirection() {
@@ -86,10 +90,15 @@ export class Block implements Entity {
     this.position.z += z;
 
     this.updateMesh();
+  }
 
-    // TODO: Do animation here... and ignore keyboard input until it finishes
-    return new Promise(resolve => {
-      setTimeout(resolve, 1000);
+  fall() {
+    this.animationQueue.enqueue(complete => {
+      const position = this.mesh.position;
+      tween(fallAnimation(position.y)).start({
+        update: y => position.setY(y),
+        complete,
+      });
     });
   }
 
