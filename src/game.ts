@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { Level } from './entities/level';
 import { levels } from './levels';
 import { Block, Direction, Directions } from './entities/block';
-import { EndTile, ButtonTile, DropTile } from './entities/tiles';
+import { ButtonTile, DropTile, EndTile } from './entities/tiles';
 
 export interface GameEvents {
   onDeath?: () => void;

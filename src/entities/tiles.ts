@@ -1,12 +1,11 @@
 import * as THREE from 'three';
 import { Entity } from './entity';
-import { B, D, E, T, W } from '../levels';
 import { Direction, Directions } from './block';
 
 const textureLoader = new THREE.TextureLoader();
 
 export abstract class Tile implements Entity {
-  protected base: THREE.Mesh;
+  protected readonly base: THREE.Mesh;
 
   protected constructor(
     x: number,
@@ -38,10 +37,10 @@ export abstract class Tile implements Entity {
 }
 
 export class BasicTile extends Tile {
-  private static textuure = textureLoader.load('assets/tile.png');
+  private static texture = textureLoader.load('assets/tile.png');
 
   constructor(x: number, z: number) {
-    super(x, z, { map: BasicTile.textuure });
+    super(x, z, { map: BasicTile.texture });
   }
 }
 
@@ -84,7 +83,7 @@ export class ButtonTile extends Tile {
 
   private readonly button: THREE.Object3D;
 
-  constructor(x, z) {
+  constructor(x: number, z: number) {
     super(x, z, { map: ButtonTile.texture });
     this.button = new THREE.Mesh(
       new THREE.CylinderGeometry(0.5, 0.5, 0.25),
@@ -92,23 +91,5 @@ export class ButtonTile extends Tile {
     );
     this.button.position.y = 0.25;
     this.base.add(this.button);
-  }
-}
-
-export function createTile(x: number, z: null, type: string) {
-  if (type === null) return;
-  switch (type) {
-    case T:
-      return new BasicTile(x, z);
-    case D:
-      return new DropTile(x, z);
-    case E:
-      return new EndTile(x, z);
-    case W:
-      return new WeightedTile(x, z);
-    case B:
-      return new ButtonTile(x, z);
-    default:
-      return new BasicTile(x, z);
   }
 }

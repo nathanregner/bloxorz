@@ -1,11 +1,26 @@
-const _ = null;
-export const E = 'goal';
-export const T = 'tile';
-export const D = 'dropable';
-export const B = 'button';
-export const W = 'cannot stand on';
+import {
+  BasicTile,
+  ButtonTile,
+  DropTile,
+  EndTile,
+  Tile,
+  WeightedTile,
+} from './entities/tiles';
 
-// TODO: Better level format?
+type TileFactory = (x: number, z: number) => Tile | null;
+
+export interface LevelTemplate {
+  tiles: TileFactory[][];
+  start: { x: number; z: number };
+}
+
+const _: TileFactory = () => null;
+const E: TileFactory = (x, z) => new EndTile(x, z);
+const T: TileFactory = (x, z) => new BasicTile(x, z);
+const D: TileFactory = (x, z) => new DropTile(x, z);
+const B: TileFactory = (x, z) => new ButtonTile(x, z);
+const W: TileFactory = (x, z) => new WeightedTile(x, z);
+
 export const L1 = {
   tiles: [
     [T, T, T, _, _, _, _, _, _, _, _],
@@ -78,10 +93,5 @@ export const L5 = {
   ],
   start: { x: 12, z: 3 },
 };
-
-export interface LevelTemplate {
-  tiles: string[][];
-  start: { x: number; z: number };
-}
 
 export const levels: LevelTemplate[] = [L1, L2, L3, L4, L5];

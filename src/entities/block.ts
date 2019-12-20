@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import { Object3D } from 'three';
 import { Entity } from './entity';
 
 interface Position {
