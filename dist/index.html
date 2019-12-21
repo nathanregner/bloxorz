@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Bloxorz</title>
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+      }
+
+      canvas {
+        width: 100%;
+        height: 100%;
+        background-image: url('assets/background.jpg');
+        background-position: top;
+        background-repeat: no-repeat;
+        background-size: cover;
+      }
+
+      #movement {
+        position: absolute;
+        bottom: 25px;
+        width: 48%;
+        text-align: center;
+        z-index: 100;
+        color: white;
+        display: block;
+      }
+
+      #reset {
+        position: absolute;
+        bottom: 8px;
+        width: 43%;
+        text-align: center;
+        z-index: 100;
+        color: white;
+        display: block;
+      }
+
+      #bloxorz {
+        position: absolute;
+        top: 10px;
+        padding-left: 5%;
+        z-index: 100;
+        color: #780800;
+        display: block;
+        font-weight: bold;
+        font-size: large;
+      }
+
+      #moves {
+        position: absolute;
+        top: 20px;
+        padding-left: 94%;
+        z-index: 100;
+        color: #780800;
+        display: block;
+        font-size: large;
+      }
+
+      #counter {
+        position: absolute;
+        top: 4px;
+        padding-left: 98%;
+        z-index: 100;
+        color: #780800;
+        display: block;
+        font-size: large;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="bloxorz">BLOXORZ</div>
+    <div id="movement">W, A, S, D for Movement</div>
+    <div id="reset">R to Reset</div>
+    <div id="moves">Moves:</div>
+    <p id="counter">0</p>
+  <script type="text/javascript" src="main.js"></script></body>
+</html>
